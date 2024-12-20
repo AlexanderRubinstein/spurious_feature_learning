@@ -1,0 +1,5 @@
+envs
+checkpoints
+results
+.pyc
+*__pycache__*
