@@ -2,6 +2,7 @@ import utils
 from utils import AverageMeter
 import tqdm
 import torch
+import timm
 
 
 
@@ -10,19 +11,22 @@ def train_epoch(model, loader, optimizer, criterion):
     loss_meter = AverageMeter()
     n_groups = loader.dataset.n_groups
     acc_groups = {g_idx: AverageMeter() for g_idx in range(n_groups)}
-    
+
     for batch in (pbar := tqdm.tqdm(loader)):
         x, y, g, s = batch
         x, y, s = x.cuda(), y.cuda(), s.cuda()
 
         optimizer.zero_grad()
         logits = model(x)
+        if len(logits.shape) == 3:
+            assert isinstance(model, timm.models.vision_transformer.VisionTransformer)
+            logits = logits[:, 0, :]  # only cls token to save space by 197 times
         loss = criterion(logits, y)
         loss.backward()
         optimizer.step()
 
         loss_meter.update(loss, x.size(0))
-        
+
         preds = torch.argmax(logits, dim=1)
         if len(y.shape) > 1:
             # mixup

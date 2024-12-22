@@ -1,5 +1,7 @@
 envs
 checkpoints
 results
+wandb
+logs
 .pyc
 *__pycache__*

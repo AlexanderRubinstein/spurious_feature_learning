@@ -11,6 +11,7 @@
             "request": "launch",
             "program": "./dfr_evaluate_spurious.py",
             "console": "integratedTerminal",
+            // checkpoints are from: https://drive.google.com/drive/folders/1OQ_oPPgxgK_7j_GCt71znyiRj6hqi_UW
             "args": [
                 "--data_dir",
                 "/mnt/lustre/work/oh/arubinstein17/cache/Waterbirds/waterbird_complete95_forest2water2",
@@ -21,10 +22,54 @@
                 "--model",
                 "imagenet_resnet50_pretrained",
                 "--ckpt_path",
-                "/home/oh/arubinstein17/github/spurious_feature_learning/checkpoints/waterbirds_erm_seed1.pt",
+                // "/home/oh/arubinstein17/github/spurious_feature_learning/checkpoints/waterbirds/seed1/final_checkpoint.pt",
+                // "/home/oh/arubinstein17/github/spurious_feature_learning/checkpoints/waterbirds/seed2/final_checkpoint.pt",
+                // "/home/oh/arubinstein17/github/spurious_feature_learning/checkpoints/waterbirds/seed3/final_checkpoint.pt",
+                // "/home/oh/arubinstein17/github/spurious_feature_learning/checkpoints/waterbirds/seed4/final_checkpoint.pt",
+                // "/home/oh/arubinstein17/github/spurious_feature_learning/checkpoints/waterbirds/seed5/final_checkpoint.pt",
+                "/home/oh/arubinstein17/github/spurious_feature_learning/logs/waterbirds/erm_seed1/final_checkpoint.pt",
                 "--result_path",
                 "/home/oh/arubinstein17/github/spurious_feature_learning/results/wb_erm_seed1_dfr.pkl",
                 "--save_linear_model"
+            ]
+        },
+        {
+            "name": "Python: train_supervised.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./train_supervised.py",
+            "console": "integratedTerminal",
+            // checkpoints are from: https://drive.google.com/drive/folders/1OQ_oPPgxgK_7j_GCt71znyiRj6hqi_UW
+            "args": [
+                "--output_dir",
+                "logs/waterbirds/erm_seed1",
+                "--num_epochs",
+                "100",
+                "--eval_freq",
+                "1",
+                "--save_freq",
+                "100",
+                "--seed",
+                "1",
+                "--weight_decay",
+                "1e-4",
+                "--batch_size",
+                "32",
+                "--init_lr",
+                "3e-3",
+                "--scheduler",
+                "cosine_lr_scheduler",
+                "--data_dir",
+                "/mnt/lustre/work/oh/arubinstein17/cache/Waterbirds/waterbird_complete95_forest2water2",
+                "--data_transform",
+                "AugWaterbirdsCelebATransform",
+                "--dataset",
+                "SpuriousCorrelationDataset",
+                "--model",
+                // from here: /home/oh/arubinstein17/github/spurious_feature_learning/models/__init__.py
+                // "imagenet_resnet50_pretrained"
+                "imagenet_vit_base_pretrained"
+                // "imagenet_densenet121_pretrained"
             ]
         }
     ]

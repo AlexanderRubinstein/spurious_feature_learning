@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 try:
     import wandb
     has_wandb = True
-except ImportError: 
+except ImportError:
     has_wandb = False
 
 import utils
@@ -79,7 +79,7 @@ def log_after_epoch(
     results = utils.get_results(acc_groups, get_ys_func)
     logger.write(f"Train results \n")
     logger.write(str(results) + "\n")
-    
+
     write_dict_to_tb(writer, results, tag, epoch)
 
     if images is not None:
@@ -102,7 +102,7 @@ def log_test_results(logger, writer, epoch, acc_groups, get_ys_func, tag):
 
 
 def log_data(logger, train_data, test_data, val_data=None, get_ys_func=None):
-    for data, name in [(train_data, "Train"), (test_data, "Test"), 
+    for data, name in [(train_data, "Train"), (test_data, "Test"),
                        (val_data, "Val")]:
         if data:
             logger.write(f'{name} Data (total {len(data)})\n')
