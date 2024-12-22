@@ -44,6 +44,8 @@ def get_y_s(g, n_spurious):
 
 
 def update_dict(acc_groups, y, g, logits):
+    if len(logits.shape) == 3:
+        logits = logits[:, 0, :]  # only cls token to save space by 197 times
     preds = torch.argmax(logits, axis=1)
     correct_batch = (preds == y)
     g = g.cpu()
@@ -118,7 +120,7 @@ def get_model_dataset_args():
                  "imagenet_mae_huge_pretrained",
                  "imagenet_mae_base_ft1k_pretrained",
                  "imagenet_mae_large_ft1k_pretrained",
-                 "imagenet_mae_huge_ft1k_pretrained",                 
+                 "imagenet_mae_huge_ft1k_pretrained",
                  "imagenet_deit_small_pretrained",
                  "imagenet_deit_base_pretrained",
                  "imagenet_swin_base_pretrained",
