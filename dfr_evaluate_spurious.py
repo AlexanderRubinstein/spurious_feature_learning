@@ -18,7 +18,7 @@ from utils import supervised_utils
 try:
     import wandb
     has_wandb = True
-except ImportError: 
+except ImportError:
     has_wandb = False
 
 # WaterBirds
@@ -215,7 +215,7 @@ def main(args):
                 args.ckpt_path = os.path.join(args.log_dir, "tmp_checkpoint.pt")
 
             args.result_path = os.path.join(args.log_dir, "dfr_test.pkl")
-    
+
     print(args)
 
     # Load data
@@ -255,7 +255,7 @@ def main(args):
         name: utils.get_results(accs, get_ys_func) for name, accs in base_model_results.items()}
     print(base_model_results)
     print()
-    
+
     model.fc = torch.nn.Identity()
     #splits = ["test", "val"]
     splits = {
@@ -280,7 +280,10 @@ def main(args):
             all_y[name], all_p[name], all_g[name] = [], [], []
             for x, y, g, p in tqdm.tqdm(loader):
                 with torch.no_grad():
-                    all_embeddings[name].append(model(x.cuda()).detach().cpu().numpy())
+                    output = model(x.cuda())
+                    if len(output.shape) == 3:
+                        output = output[:, 0, :]  # only cls token to save space by 197 times
+                    all_embeddings[name].append((output).detach().cpu().numpy())
                     all_y[name].append(y.detach().cpu().numpy())
                     all_g[name].append(g.detach().cpu().numpy())
                     all_p[name].append(p.detach().cpu().numpy())
@@ -309,7 +312,7 @@ def main(args):
             all_g[name] = all_g[name][all_masks[name]]
             all_p[name] = all_p[name][all_masks[name]]
             all_embeddings[name] = all_embeddings[name][all_masks[name]]
-    
+
     if args.dfr_train:
         print("Reweighting on training data")
         all_y["val"] = all_y["train"]
@@ -360,7 +363,7 @@ def main(args):
         print()
 
         all_results["dfr_val_spurious_results"] = dfr_spurious_results
-    
+
     print(all_results)
 
 
