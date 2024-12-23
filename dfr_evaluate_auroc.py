@@ -329,7 +329,11 @@ def main(args):
             all_y[name], all_p[name], all_g[name] = [], [], []
             for x, y, g, p in tqdm.tqdm(loader):
                 with torch.no_grad():
-                    all_embeddings[name].append(model(x.cuda()).detach().cpu().numpy())
+                    output = model(x.cuda())
+                    if len(output.shape) == 3:
+                        output = output[:, 0, :]  # only cls token to save space by 197 times
+
+                    all_embeddings[name].append(output.detach().cpu().numpy())
                     all_y[name].append(y.detach().cpu().numpy())
                     all_g[name].append(g.detach().cpu().numpy())
                     all_p[name].append(p.detach().cpu().numpy())
